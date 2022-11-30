@@ -154,13 +154,13 @@ public class UserController {
 			ArrayList<Integer> ticketIdList = uServ.getPreviousTicketIds(target.getEmployeeId());
 			
 			if( ticketIdList.size() > 0 ) {
-				ctx.html("Found tickets: \n");
+				String printString = "Found tickets: \n";
 				//iterate through list -> print to html
 				for (int i = 0 ; i < ticketIdList.size() ; i ++) {
 					logger.info("Ticket Id: " + ticketIdList.get(i) + "\n");
-					ctx.html("Ticket Id: " + ticketIdList.get(i) + "\n");
+					printString += "Ticket Id: " + ticketIdList.get(i) + "\n";
 				}
-				
+				ctx.html(printString);
 				ctx.status(HttpStatus.OK);
 			}else {
 				ctx.html("Error during retrieval. Try again.");

@@ -125,18 +125,15 @@ public class UserController {
 		ObjectMapper om = new ObjectMapper();
 		Ticket target = om.readValue(body, Ticket.class);
 		
+		boolean doesntExist = uServ.doesTicketExist(target.getId());
+		
 		Ticket currentTicket = uServ.getTicketById(target.getId());
 		
-		if (target.getId() == 0 || target.getAmount() == 0.0 || target.getDescription() == null) {
-			ctx.html("Error during processing. Try again.");
-			ctx.status(HttpStatus.BAD_REQUEST);
-		}
-		
-		if( currentTicket != null ) {
+		if( currentTicket != null && !doesntExist ) {
 			ctx.html(currentTicket.toString());
 			ctx.status(HttpStatus.OK);
 		}else {
-			ctx.html("Error during processing. Try again.");
+			ctx.html("Ticket doesn't exist or cannot be found.");
 			ctx.status(HttpStatus.BAD_REQUEST);
 		}
 		
@@ -150,6 +147,7 @@ public class UserController {
 		//here we will convert the body into a User object
 			ObjectMapper om = new ObjectMapper();
 			Ticket target = om.readValue(body, Ticket.class);
+			
 			
 			ArrayList<Integer> ticketIdList = uServ.getPreviousTicketIds(target.getEmployeeId());
 			

@@ -3,6 +3,3 @@
 
 --for UserDAOImpl.createTicket() -- change so that employeeId is automatically the same as whatever user is submitting
 
--Postman - getByTicketId - will allow search for non-existent tickets
-
--View Previous Tickets UserController, works but -> ctx.html wont 

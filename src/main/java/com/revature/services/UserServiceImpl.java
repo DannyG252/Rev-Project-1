@@ -96,6 +96,11 @@ public class UserServiceImpl implements UserService {
 		logger.info("this ticket has already been proccessd t/f: " + currentTicket.isProcessed());
 		return currentTicket.isProcessed();
 	}
+	
+	public boolean doesTicketExist(int ticketId) {
+		logger.info("UserService::doesTicketExist() called. Trying to find ticket "+ ticketId +"...");
+		return userDAO.doesTicketExist(ticketId);
+	}
 
 	
 }

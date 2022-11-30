@@ -245,5 +245,34 @@ public class UserDAOImpl implements UserDAO{
 		return null;
 	}
 
+	public boolean doesTicketExist (int ticketId) {
+		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
+			String sql = "SELECT id FROM tickets";
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+	
+			ResultSet rs = pstmt.executeQuery();
+			ArrayList<Integer> ticketIdList = new ArrayList<Integer>();
+			
+			while(rs.next()) {
+				ticketIdList.add(rs.getInt("id"));
+			}
+			
+			if (ticketIdList.size() <= ticketId) {
+				return true;
+			}else {
+				return false;
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		//if nothing found
+		logger.info("Ticket not found");
+		return false;
+	}
+	
 }
 	

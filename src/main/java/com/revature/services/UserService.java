@@ -25,4 +25,5 @@ public interface UserService {
 
 	public boolean checkTicketProcessed(int ticketId);
 	
+	public boolean doesTicketExist(int ticketId);
 }

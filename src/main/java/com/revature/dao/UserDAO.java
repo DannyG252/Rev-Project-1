@@ -28,6 +28,8 @@ public interface UserDAO {
 
 	ArrayList<Integer> getPreviousTicketIds(int employeeId);
 	
+	boolean doesTicketExist(int ticketId);
+	
 
 }
 

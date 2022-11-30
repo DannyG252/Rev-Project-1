@@ -1,6 +1,8 @@
 package com.revature.dao;
 
 
+import java.util.ArrayList;
+
 import com.revature.models.Ticket;
 import com.revature.models.User;
 
@@ -23,6 +25,8 @@ public interface UserDAO {
 	Ticket getTicketById(int id);
 	
 	boolean updateTicket (Ticket ticket);
+
+	ArrayList<Integer> getPreviousTicketIds(int employeeId);
 	
 
 }

@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import java.util.ArrayList;
+
 import com.revature.models.Ticket;
 import com.revature.models.User;
 
@@ -18,5 +20,9 @@ public interface UserService {
 	public Ticket getTicketById(int id);
 	
 	public boolean updateTicket(Ticket ticket);
+
+	public ArrayList<Integer> getPreviousTicketIds(int employeeId);
+
+	public boolean checkTicketProcessed(int ticketId);
 	
 }

@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +80,21 @@ public class UserServiceImpl implements UserService {
 	public boolean updateTicket(Ticket ticket) {
 		logger.info("UserService::updateTicket() called. Updating ticket ID# "+ ticket.getId() +"...");
 		return userDAO.updateTicket(ticket);
+	}
+
+	@Override
+	public ArrayList<Integer> getPreviousTicketIds(int employeeId) {
+		logger.info("UserService::getPreviousTicketIds() called. Trying to find tickets for employee "+ employeeId +"...");
+		return userDAO.getPreviousTicketIds(employeeId);
+	}
+
+	@Override
+	public boolean checkTicketProcessed(int ticketId) {
+		logger.info("UserService::checkTicketProcessed() called. Checking ticket ID# "+ ticketId +"...");
+		Ticket currentTicket = getTicketById(ticketId);
+		
+		logger.info("this ticket has already been proccessd t/f: " + currentTicket.isProcessed());
+		return currentTicket.isProcessed();
 	}
 
 	

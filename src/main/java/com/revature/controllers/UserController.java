@@ -1,5 +1,7 @@
 package com.revature.controllers;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,16 +99,22 @@ public class UserController {
 		ObjectMapper om = new ObjectMapper();
 		Ticket target = om.readValue(body, Ticket.class);
 		
-		boolean isUpdated = uServ.updateTicket(target);
-		
-		if(isUpdated == true) {
-			ctx.html("Ticket ID# "+ target.getId() +"has been processed successfully.");
-			ctx.status(HttpStatus.OK);
+		//add isProcessed check first -> dont allow update
+		boolean alreadyProcessed = uServ.checkTicketProcessed(target.getId());
+		if (alreadyProcessed) {
+			ctx.html("This ticket has already been processed.");
+			ctx.status(HttpStatus.FORBIDDEN);
 		}else {
-			ctx.html("Error during processing. Try again.");
-			ctx.status(HttpStatus.BAD_REQUEST);
+			boolean isUpdated = uServ.updateTicket(target);
+			
+			if(isUpdated == true) {
+				ctx.html("Ticket ID# "+ target.getId() +"has been processed successfully.");
+				ctx.status(HttpStatus.OK);
+			}else {
+				ctx.html("Error during processing. Try again.");
+				ctx.status(HttpStatus.BAD_REQUEST);
+			}
 		}
-		
 	};
 	
 	public static Handler getTicketById = ctx -> {
@@ -119,22 +127,13 @@ public class UserController {
 		
 		Ticket currentTicket = uServ.getTicketById(target.getId());
 		
-		String statusString = "";
-		
-		switch(currentTicket.getStatus()) {
-		case 1: statusString = "pending"; break;
-		case 2: statusString = "approved"; break;
-		case 3: statusString = "denied"; break;
-		
+		if (target.getId() == 0 || target.getAmount() == 0.0 || target.getDescription() == null) {
+			ctx.html("Error during processing. Try again.");
+			ctx.status(HttpStatus.BAD_REQUEST);
 		}
 		
 		if( currentTicket != null ) {
-			ctx.html("Ticket ID#: "+ target.getId() +
-					"\nAmount: "+ currentTicket.getAmount() +
-					"\nDescription: "+ currentTicket.getDescription() +
-					"\nEmployee ID#: "+ currentTicket.getEmployeeId() +
-					"\nStatus: " + statusString
-					);
+			ctx.html(currentTicket.toString());
 			ctx.status(HttpStatus.OK);
 		}else {
 			ctx.html("Error during processing. Try again.");
@@ -144,4 +143,28 @@ public class UserController {
 	};
 
 
+	public static Handler getPreviousTicketIds = ctx -> {
+		logger.info("User is making a ticket-view-previous request...");
+		String body = ctx.body();
+		
+		//here we will convert the body into a User object
+			ObjectMapper om = new ObjectMapper();
+			Ticket target = om.readValue(body, Ticket.class);
+			
+			ArrayList<Integer> ticketIdList = uServ.getPreviousTicketIds(target.getEmployeeId());
+			
+			if( ticketIdList.size() > 0 ) {
+				ctx.html("Found tickets: \n");
+				//iterate through list -> print to html
+				for (int i = 0 ; i < ticketIdList.size() ; i ++) {
+					logger.info("Ticket Id: " + ticketIdList.get(i) + "\n");
+					ctx.html("Ticket Id: " + ticketIdList.get(i) + "\n");
+				}
+				
+				ctx.status(HttpStatus.OK);
+			}else {
+				ctx.html("Error during retrieval. Try again.");
+				ctx.status(HttpStatus.BAD_REQUEST);
+			}
+	};
 }

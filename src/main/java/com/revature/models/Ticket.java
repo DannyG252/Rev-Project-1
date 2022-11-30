@@ -47,7 +47,16 @@ public class Ticket {
 	}
 	@Override
 	public String toString() {
-		return "Ticket [id=" + id + ", amount=" + amount + ", description=" + description + ", status=" + status
+		
+	String statusString = "";
+		
+		switch(status) {
+		case 1: statusString = "pending"; break;
+		case 2: statusString = "approved"; break;
+		case 3: statusString = "denied"; break;
+		}
+		
+		return "Ticket [id=" + id + ", amount=" + amount + ", description=" + description + ", status=" + statusString
 				+ ", employeeId=" + employeeId + ", managerId=" + managerId + ", processed=" + processed + "]";
 	}
 	@Override

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,6 @@ import com.revature.models.User;
 import com.revature.util.JDBCConnectionUtil;
 
 public class UserDAOImpl implements UserDAO{
-
-	static Connection conn = JDBCConnectionUtil.getConnection();
 	
 	private static Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 	
@@ -24,6 +23,7 @@ public class UserDAOImpl implements UserDAO{
 	public int createUser(User user) {
 		// this will be how we insert new users into db
 		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
 			//1. prepare our SQL statement
 			//we are using ? as a placeholder for the values we will set in our preparedstatement
 			//this is used to prevent SQL injection (aka your users having the ability to mess up your code with their own data)
@@ -58,6 +58,8 @@ public class UserDAOImpl implements UserDAO{
 
 	public User getByUsername(String username) {
 		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
 			String sql = "SELECT id, username, password, role FROM users WHERE username = ?";
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, username);
@@ -90,6 +92,8 @@ public class UserDAOImpl implements UserDAO{
 	public int createTicket(Ticket ticket) {
 	
 		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
 			String sql = "INSERT INTO tickets (employee_id, amount, description, status, manager_id, processed) VALUES( ?, ?, ?, 1, null, false)";
 		
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -121,6 +125,8 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public Ticket getTicketByEmployeeId(int employeeId) {
 		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
 			String sql = "SELECT * FROM tickets WHERE employee_id = ?";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -154,20 +160,22 @@ public class UserDAOImpl implements UserDAO{
 
 	@Override
 	public boolean updateTicket(Ticket ticket) {
-		try {
-			//if (ticket.isProcessed() != true && ticket.getStatus() == 1) { //can only update if not already updated
-			String sql = "UPDATE tickets SET status =?, manager_id = ?, processed = true WHERE id=?";
-			PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
-			pstmt.setInt(1,ticket.getStatus());
-			pstmt.setInt(2,ticket.getManagerId());
-			pstmt.setInt(3,ticket.getId());
-			
-			if(pstmt.executeUpdate() > 0) {
-				return true;
-			};
-		} catch (SQLException sqlEx){
-			logger.error("UserDAOImpl - updateTicket() " + sqlEx.getMessage());
-		}
+			try {
+				Connection conn = JDBCConnectionUtil.getConnection();
+				
+				//if (ticket.isProcessed() != true && ticket.getStatus() == 1) { //can only update if not already updated
+				String sql = "UPDATE tickets SET status =?, manager_id = ?, processed = true WHERE id=?";
+				PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+				pstmt.setInt(1,ticket.getStatus());
+				pstmt.setInt(2,ticket.getManagerId());
+				pstmt.setInt(3,ticket.getId());
+				
+				if(pstmt.executeUpdate() > 0) {
+					return true;
+				};
+			} catch (SQLException sqlEx){
+				logger.error("UserDAOImpl - updateTicket() " + sqlEx.getMessage());
+			}
 		return false;
 	}
 
@@ -175,7 +183,9 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public Ticket getTicketById(int id) {
 		try {
-			String sql = "SELECT employee_id, amount, description, status FROM tickets WHERE id = ?";
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
+			String sql = "SELECT id, employee_id, amount, description, status, processed FROM tickets WHERE id = ?";
 			
 			Ticket currentTicket = new Ticket();
 			
@@ -184,18 +194,48 @@ public class UserDAOImpl implements UserDAO{
 		
 			ResultSet rs = pstmt.executeQuery();
 			
-			
 			while(rs.next()) {
-			
+				currentTicket.setId(rs.getInt("id"));
 				currentTicket.setEmployeeId(rs.getInt("employee_id"));
 				currentTicket.setAmount(rs.getDouble("amount"));
 				currentTicket.setDescription(rs.getString("description"));
 				currentTicket.setStatus(rs.getInt("status"));
+				currentTicket.setProcessed(rs.getBoolean("processed"));
 			}
 			
 			logger.info("UserDAOImpl - getTicketById - found ticket: " + id);
 			conn.close();
 			return currentTicket;
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		//if nothing found
+		logger.info("Ticket not found");
+		return null;
+	}
+
+
+	@Override
+	public ArrayList<Integer> getPreviousTicketIds(int employeeId) {
+			try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
+			String sql = "SELECT id FROM tickets WHERE employee_id = ?";
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setInt(1, employeeId);
+		
+			ResultSet rs = pstmt.executeQuery();
+			ArrayList<Integer> ticketIdList = new ArrayList<Integer>();
+			
+			while(rs.next()) {
+				ticketIdList.add(rs.getInt("id"));
+			}
+			
+			logger.info("UserDAOImpl - getPreviousTickerIds - found ticket for employee " + employeeId);
+			conn.close();
+			return ticketIdList;
 			
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());

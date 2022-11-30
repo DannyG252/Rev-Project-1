@@ -1,0 +1,8 @@
+LOG
+-pom, logback.xml, jdbcConnection
+
+
+-Create user -> login
+
+-UserDAOImpl, TicketDAOImpl
+	-> service, controllers

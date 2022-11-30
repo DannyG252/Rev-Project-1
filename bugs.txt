@@ -1,0 +1,10 @@
+
+-connection closes, so can't login twice - need create new instance for method, not class
+
+
+--how store who's logged in so only employees/managers can use their funcs?
+
+--for UserDAOImpl.createTicket() -- change so that employeeId is automatically the same as whatever user is submitting
+
+
+-new ticket gets created with auto information

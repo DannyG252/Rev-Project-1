@@ -37,7 +37,7 @@ public class MainDriver {
 		app.post("/users/register", UserController.register);
 		app.post("/users/login", UserController.login);
 		app.post("/tickets/register", UserController.registerTicket);
-		
+		app.post("/tickets/get-by-ticket-id", UserController.getTicketById);
 		
 		//PUT METHODS
 		

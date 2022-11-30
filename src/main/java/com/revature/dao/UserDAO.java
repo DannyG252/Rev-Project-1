@@ -20,6 +20,8 @@ public interface UserDAO {
 	
 	Ticket getTicketByEmployeeId(int employeeId);
 	
+	Ticket getTicketById(int id);
+	
 	boolean updateTicket (Ticket ticket);
 	
 

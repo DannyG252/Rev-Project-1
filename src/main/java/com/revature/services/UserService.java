@@ -15,6 +15,8 @@ public interface UserService {
 	
 	public Ticket getTicketByEmployeeId(int employeeId);
 	
+	public Ticket getTicketById(int id);
+	
 	public boolean updateTicket(Ticket ticket);
 	
 }

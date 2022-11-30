@@ -108,6 +108,40 @@ public class UserController {
 		}
 		
 	};
+	
+	public static Handler getTicketById = ctx -> {
+		logger.info("User is making a ticket-get-by-id request...");
+		String body = ctx.body();
+		
+		//here we will convert the body into a User object
+		ObjectMapper om = new ObjectMapper();
+		Ticket target = om.readValue(body, Ticket.class);
+		
+		Ticket currentTicket = uServ.getTicketById(target.getId());
+		
+		String statusString = "";
+		
+		switch(currentTicket.getStatus()) {
+		case 1: statusString = "pending"; break;
+		case 2: statusString = "approved"; break;
+		case 3: statusString = "denied"; break;
+		
+		}
+		
+		if( currentTicket != null ) {
+			ctx.html("Ticket ID#: "+ target.getId() +
+					"\nAmount: "+ currentTicket.getAmount() +
+					"\nDescription: "+ currentTicket.getDescription() +
+					"\nEmployee ID#: "+ currentTicket.getEmployeeId() +
+					"\nStatus: " + statusString
+					);
+			ctx.status(HttpStatus.OK);
+		}else {
+			ctx.html("Error during processing. Try again.");
+			ctx.status(HttpStatus.BAD_REQUEST);
+		}
+		
+	};
 
 
 }

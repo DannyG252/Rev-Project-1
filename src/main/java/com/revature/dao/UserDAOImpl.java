@@ -171,5 +171,39 @@ public class UserDAOImpl implements UserDAO{
 		return false;
 	}
 
+
+	@Override
+	public Ticket getTicketById(int id) {
+		try {
+			String sql = "SELECT employee_id, amount, description, status FROM tickets WHERE id = ?";
+			
+			Ticket currentTicket = new Ticket();
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+		
+			ResultSet rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()) {
+			
+				currentTicket.setEmployeeId(rs.getInt("employee_id"));
+				currentTicket.setAmount(rs.getDouble("amount"));
+				currentTicket.setDescription(rs.getString("description"));
+				currentTicket.setStatus(rs.getInt("status"));
+			}
+			
+			logger.info("UserDAOImpl - getTicketById - found ticket: " + id);
+			conn.close();
+			return currentTicket;
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		//if nothing found
+		logger.info("Ticket not found");
+		return null;
+	}
+
 }
 	

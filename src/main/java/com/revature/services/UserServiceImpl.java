@@ -64,8 +64,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Ticket getTicketByEmployeeId(int employeeId) {
-		logger.info("UserService::getUserByUsername() called. Trying to find tickets for employee "+ employeeId +"...");
+		logger.info("UserService::getTicketByEmployeeId() called. Trying to find tickets for employee "+ employeeId +"...");
 		return userDAO.getTicketByEmployeeId(employeeId);
+	}
+	
+	@Override
+	public Ticket getTicketById(int id) {
+		logger.info("UserService::getTicketById() called. Trying to find ticket "+ id +"...");
+		return userDAO.getTicketById(id);
 	}
 
 	@Override

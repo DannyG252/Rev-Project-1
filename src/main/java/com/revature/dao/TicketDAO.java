@@ -1,6 +1,7 @@
 package com.revature.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.revature.models.Ticket;
 
@@ -17,7 +18,7 @@ public interface TicketDAO {
 	
 	boolean updateTicket (Ticket ticket);
 
-	ArrayList<Integer> getPreviousTicketIds(int employeeId);
+	HashMap<Integer, String > getPreviousTicketIds(int employeeId, int status);
 	
 	boolean doesTicketExist(int ticketId);
 }

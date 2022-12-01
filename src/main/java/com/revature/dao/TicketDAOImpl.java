@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,24 +147,37 @@ public class TicketDAOImpl implements TicketDAO{
 
 
 	@Override
-	public ArrayList<Integer> getPreviousTicketIds(int employeeId) {
+	public HashMap<Integer, String> getPreviousTicketIds(int employeeId, int status) {
 			try {
 			Connection conn = JDBCConnectionUtil.getConnection();
 			
-			String sql = "SELECT id FROM tickets WHERE employee_id = ?";
+			String sql = "SELECT id, status FROM tickets WHERE employee_id = ? AND status = ?";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, employeeId);
+			pstmt.setInt(2, status);
 		
 			ResultSet rs = pstmt.executeQuery();
-			ArrayList<Integer> ticketIdList = new ArrayList<Integer>();
-			
+			//ArrayList<Integer> ticketIdList = new ArrayList<Integer>();
+			HashMap<Integer, String> ticketList = new HashMap<>();
+			int one; 
+			int two;
+			String twoString = " ";
 			while(rs.next()) {
-				ticketIdList.add(rs.getInt("id"));
-			}
-			logger.info("TicketDAOImpl - getPreviousTickerIds - found ticket for employee " + employeeId);
+				//ticketIdLst.add(rs.getInt("id"));
+				one = rs.getInt("id");
+				two = rs.getInt("status");
+				switch(two){
+				case 1: twoString = "pending"; break;
+				case 2: twoString = "approved"; break;
+				case 3: twoString = "denied"; break;
+				default: twoString = "n/a"; break;
+				}
+				ticketList.put(one, twoString);
+				}
+			logger.info("TicketDAOImpl - getPreviousTickerIds - found tickets for employee " + employeeId);
 			conn.close();
-			return ticketIdList;
+			return ticketList;
 			
 		}catch(SQLException e) {
 			System.out.println(e.getMessage());

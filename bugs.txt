@@ -10,13 +10,7 @@
 	
 --test service and dao
 
---org into Ticket services
-
-
-
-**double check rubric
-
-***-Employees can view prev submissions and filter by approved, denied, pending
+--employee view prev tickets -> employee only
 
 --write description of all funcs / whats interacting
 --reset db / set up for present

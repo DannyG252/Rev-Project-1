@@ -1,6 +1,9 @@
 package com.revature.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,17 +198,18 @@ public class UserController {
 		//here we will convert the body into a Ticket object
 			ObjectMapper om = new ObjectMapper();
 			Ticket target = om.readValue(body, Ticket.class);
+
+			HashMap<Integer, String> ticketIdList = tServ.getPreviousTicketIds(target.getEmployeeId(), target.getStatus());
 			
+			if( ticketIdList.size() > 0 ) {	
+			Iterator<Map.Entry<Integer, String>> iterator = ticketIdList.entrySet().iterator();
+			String printString = "Found tickets: \n";
 			
-			ArrayList<Integer> ticketIdList = tServ.getPreviousTicketIds(target.getEmployeeId());
-			
-			if( ticketIdList.size() > 0 ) {
-				String printString = "Found tickets: \n";
-				//iterate through list -> print to html
-				for (int i = 0 ; i < ticketIdList.size() ; i ++) {
-					logger.info("Ticket Id: " + ticketIdList.get(i) + "\n");
-					printString += "Ticket Id: " + ticketIdList.get(i) + "\n";
-				}
+			while(iterator.hasNext()) {
+				Map.Entry<Integer, String> currTicket = iterator.next();
+				printString += "Ticket Id = " + currTicket.getKey() + " , Status = " + currTicket.getValue() + "\n";
+			}
+				
 				ctx.html(printString);
 				ctx.status(HttpStatus.OK);
 			}else {

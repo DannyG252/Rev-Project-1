@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.revature.models.Ticket;
 
@@ -15,7 +16,7 @@ public interface TicketService {
 	
 	public boolean updateTicket(Ticket ticket);
 
-	public ArrayList<Integer> getPreviousTicketIds(int employeeId);
+	public HashMap<Integer, String> getPreviousTicketIds(int employeeId, int status);
 
 	public boolean checkTicketProcessed(int ticketId);
 	

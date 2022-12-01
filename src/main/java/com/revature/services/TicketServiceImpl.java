@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +48,9 @@ public class TicketServiceImpl implements TicketService{
 	}
 
 	@Override
-	public ArrayList<Integer> getPreviousTicketIds(int employeeId) {
+	public HashMap<Integer, String> getPreviousTicketIds(int employeeId, int status) {
 		logger.info("TicketService::getPreviousTicketIds() called. Trying to find tickets for employee "+ employeeId +"...");
-		return ticketDAO.getPreviousTicketIds(employeeId);
+		return ticketDAO.getPreviousTicketIds(employeeId, status);
 	}
 
 	@Override

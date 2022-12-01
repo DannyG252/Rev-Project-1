@@ -221,7 +221,7 @@ public class UserDAOImpl implements UserDAO{
 			try {
 			Connection conn = JDBCConnectionUtil.getConnection();
 			
-			String sql = "SELECT id FROM tickets WHERE employee_id = ?";
+			String sql = "SELECT id qFROM tickets WHERE employee_id = ?";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, employeeId);
@@ -232,7 +232,6 @@ public class UserDAOImpl implements UserDAO{
 			while(rs.next()) {
 				ticketIdList.add(rs.getInt("id"));
 			}
-			
 			logger.info("UserDAOImpl - getPreviousTickerIds - found ticket for employee " + employeeId);
 			conn.close();
 			return ticketIdList;
@@ -260,7 +259,8 @@ public class UserDAOImpl implements UserDAO{
 				ticketIdList.add(rs.getInt("id"));
 			}
 			
-			if (ticketIdList.size() <= ticketId) {
+			logger.info("arraylist size: " + ticketIdList.size());
+			if (ticketIdList.size() <= (ticketId-1)) {
 				return true;
 			}else {
 				return false;

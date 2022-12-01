@@ -3,3 +3,11 @@
 
 --for UserDAOImpl.createTicket() -- change so that employeeId is automatically the same as whatever user is submitting
 
+
+--add cookies / authorization
+	-> to each endpoint
+		UserController:
+		 -register , login, register ticket (E - employeecookie-end567), process ticket (M- managercookie-end567), get ticket by id , get previous tickets 
+		 
+	
+--test service and dao

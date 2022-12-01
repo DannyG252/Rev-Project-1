@@ -15,6 +15,7 @@ import com.revature.services.UserServiceImpl;
 
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
+import jakarta.servlet.http.Cookie;
 
 public class UserController {
 	
@@ -62,7 +63,13 @@ public class UserController {
 		
 		//3. render response
 		if(isAuthenicated == true) {
-			ctx.html("Successful login. Welcome " + target.getUsername() + "!");
+			ctx.html("Successful" + "login. Welcome " + target.getUsername() + "!");
+			
+			//authorize user - cookie
+			ctx.cookieStore().set("Auth-Cookie", target.getUsername() + "unique-key123");
+			Cookie auth = new Cookie ("Auth-Cookie", target.getUsername() + "cookie-end567");
+			ctx.res().addCookie(auth);
+					
 			ctx.status(HttpStatus.OK);
 		}else {
 			ctx.html("Invalid username and/or password. Please try again.");
@@ -79,14 +86,37 @@ public class UserController {
 			Ticket target = om.readValue(body, Ticket.class);
 			logger.info("New Ticket: " + target);
 			
-			boolean isCreated = uServ.registerTicket(target);
+			//****
+			//get HTTP cookie from the request header
 			
-			if(isCreated == true) {
-				ctx.html("The new ticket has been created successfully.");
-				ctx.status(HttpStatus.CREATED);
-			}else {
-				ctx.html("Error during creation. Try again.");
-				ctx.status(HttpStatus.NO_CONTENT);
+			//String cookieReq = ctx.req().getHeader("Auth-Cookie").replaceAll("cookie-end567", "");
+			String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+			cookieReq = cookieReq.replaceAll("unique-key123","");
+			logger.info("Authenication cookie: " + cookieReq);
+			
+			//get the logged in user info
+			User currUser = uServ.getUserByUsername(cookieReq);
+			logger.info("Based on cookie, current user is: " + currUser.toString());
+
+			//if user matches the employee username, then allowed to perform func
+			try {
+				if(currUser.getUsername().equalsIgnoreCase("employee")) { //***CHANGE THIS - this is checking for specific username, should be checking by role
+					boolean isCreated = uServ.registerTicket(target);
+					
+					if(isCreated == true) {
+						ctx.html("The new ticket has been created successfully.");
+						ctx.status(HttpStatus.CREATED);
+					}else {
+						ctx.html("Error during creation. Try again.");
+						ctx.status(HttpStatus.NO_CONTENT);
+					}
+				}else {
+					ctx.html("Sorry, this user is not authorized to perform this action");
+					ctx.status(HttpStatus.UNAUTHORIZED);
+				}
+			}catch (NullPointerException e) {
+				ctx.html("Sorry, this user is not authorized to perform this action");
+				ctx.status(HttpStatus.UNAUTHORIZED);
 			}
 	};
 	

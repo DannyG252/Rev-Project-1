@@ -50,57 +50,6 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
-	@Override
-	public boolean registerTicket(Ticket ticket) {
-		//1. log event
-		logger.info("UserServiceImpl::registerTicket() called. Creating new user...");
-		
-		//2. get the new id number (do dao method call here)
-		int id = userDAO.createTicket(ticket);
-		
-		//3. return true if id exists else return false
-		logger.info("Received from DAO. New ID: " + id);
-		
-		return (id != 0) ? true : false;
-	}
-
-	@Override
-	public Ticket getTicketByEmployeeId(int employeeId) {
-		logger.info("UserService::getTicketByEmployeeId() called. Trying to find tickets for employee "+ employeeId +"...");
-		return userDAO.getTicketByEmployeeId(employeeId);
-	}
-	
-	@Override
-	public Ticket getTicketById(int id) {
-		logger.info("UserService::getTicketById() called. Trying to find ticket "+ id +"...");
-		return userDAO.getTicketById(id);
-	}
-
-	@Override
-	public boolean updateTicket(Ticket ticket) {
-		logger.info("UserService::updateTicket() called. Updating ticket ID# "+ ticket.getId() +"...");
-		return userDAO.updateTicket(ticket);
-	}
-
-	@Override
-	public ArrayList<Integer> getPreviousTicketIds(int employeeId) {
-		logger.info("UserService::getPreviousTicketIds() called. Trying to find tickets for employee "+ employeeId +"...");
-		return userDAO.getPreviousTicketIds(employeeId);
-	}
-
-	@Override
-	public boolean checkTicketProcessed(int ticketId) {
-		logger.info("UserService::checkTicketProcessed() called. Checking ticket ID# "+ ticketId +"...");
-		Ticket currentTicket = getTicketById(ticketId);
-		
-		logger.info("this ticket has already been proccessd t/f: " + currentTicket.isProcessed());
-		return currentTicket.isProcessed();
-	}
-	
-	public boolean doesTicketExist(int ticketId) {
-		logger.info("UserService::doesTicketExist() called. Trying to find ticket "+ ticketId +"...");
-		return userDAO.doesTicketExist(ticketId);
-	}
 
 	
 }

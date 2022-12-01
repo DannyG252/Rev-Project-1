@@ -13,17 +13,5 @@ public interface UserService {
 	
 	public boolean login(String username, String password);
 	
-	public boolean registerTicket(Ticket ticket); 
 	
-	public Ticket getTicketByEmployeeId(int employeeId);
-	
-	public Ticket getTicketById(int id);
-	
-	public boolean updateTicket(Ticket ticket);
-
-	public ArrayList<Integer> getPreviousTicketIds(int employeeId);
-
-	public boolean checkTicketProcessed(int ticketId);
-	
-	public boolean doesTicketExist(int ticketId);
 }

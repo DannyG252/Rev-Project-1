@@ -19,3 +19,4 @@
 ***-Employees can view prev submissions and filter by approved, denied, pending
 
 --write description of all funcs / whats interacting
+--reset db / set up for present

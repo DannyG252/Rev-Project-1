@@ -1,13 +1,21 @@
 
---how store who's logged in so only employees/managers can use their funcs?
-
 --for UserDAOImpl.createTicket() -- change so that employeeId is automatically the same as whatever user is submitting
 
+--get ticket by id --change to return all info from ticket
 
 --add cookies / authorization
 	-> to each endpoint
 		UserController:
-		 -register , login, register ticket (E - employeecookie-end567), process ticket (M- managercookie-end567), get ticket by id , get previous tickets 
-		 
+		 -register , login, register ticket (E), process ticket (M), get ticket by id , get previous tickets 
 	
 --test service and dao
+
+--org into Ticket services
+
+
+
+**double check rubric
+
+***-Employees can view prev submissions and filter by approved, denied, pending
+
+--write description of all funcs / whats interacting

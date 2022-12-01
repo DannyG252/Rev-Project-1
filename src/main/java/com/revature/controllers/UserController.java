@@ -88,8 +88,6 @@ public class UserController {
 			
 			//****
 			//get HTTP cookie from the request header
-			
-			//String cookieReq = ctx.req().getHeader("Auth-Cookie").replaceAll("cookie-end567", "");
 			String cookieReq = ctx.cookieStore().get("Auth-Cookie");
 			cookieReq = cookieReq.replaceAll("unique-key123","");
 			logger.info("Authenication cookie: " + cookieReq);
@@ -100,7 +98,7 @@ public class UserController {
 
 			//if user matches the employee username, then allowed to perform func
 			try {
-				if(currUser.getUsername().equalsIgnoreCase("employee")) { //***CHANGE THIS - this is checking for specific username, should be checking by role
+				if(currUser.getRole() == 2) { // if employee is logged in
 					boolean isCreated = uServ.registerTicket(target);
 					
 					if(isCreated == true) {
@@ -129,21 +127,37 @@ public class UserController {
 		ObjectMapper om = new ObjectMapper();
 		Ticket target = om.readValue(body, Ticket.class);
 		
-		//add isProcessed check first -> dont allow update
+		//**Check cookie if manager**
+		String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+		cookieReq = cookieReq.replaceAll("unique-key123","");
+		logger.info("Authenication cookie: " + cookieReq);
+		User currUser = uServ.getUserByUsername(cookieReq);
+		logger.info("Based on cookie, current user is: " + currUser.toString());
+		try {
+			if(currUser.getRole() == 1) { //if manager is logged in
+	
 		boolean alreadyProcessed = uServ.checkTicketProcessed(target.getId());
 		if (alreadyProcessed) {
 			ctx.html("This ticket has already been processed.");
 			ctx.status(HttpStatus.FORBIDDEN);
-		}else {
-			boolean isUpdated = uServ.updateTicket(target);
-			
-			if(isUpdated == true) {
-				ctx.html("Ticket ID# "+ target.getId() +"has been processed successfully.");
-				ctx.status(HttpStatus.OK);
 			}else {
-				ctx.html("Error during processing. Try again.");
-				ctx.status(HttpStatus.BAD_REQUEST);
+				boolean isUpdated = uServ.updateTicket(target);
+				
+				if(isUpdated == true) {
+					ctx.html("Ticket ID# "+ target.getId() +"has been processed successfully.");
+					ctx.status(HttpStatus.OK);
+				}else {
+					ctx.html("Error during processing. Try again.");
+					ctx.status(HttpStatus.BAD_REQUEST);
+				}
 			}
+		}else {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
+		}
+		}catch (NullPointerException e) {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
 		}
 	};
 	

@@ -16,12 +16,12 @@ public class TicketServiceImpl implements TicketService{
 	private static TicketDAO ticketDAO = new TicketDAOImpl();
 	
 	@Override
-	public boolean registerTicket(Ticket ticket) {
+	public boolean registerTicket(Ticket ticket, int employeeId) {
 		//1. log event
 		logger.info("TicketServiceImpl::registerTicket() called. Creating new user...");
 		
 		//2. get the new id number (do dao method call here)
-		int id = ticketDAO.createTicket(ticket);
+		int id = ticketDAO.createTicket(ticket, employeeId);
 		
 		//3. return true if id exists else return false
 		logger.info("Received from DAO. New ID: " + id);
@@ -42,9 +42,9 @@ public class TicketServiceImpl implements TicketService{
 	}
 
 	@Override
-	public boolean updateTicket(Ticket ticket) {
+	public boolean updateTicket(Ticket ticket, int managerId) {
 		logger.info("TicketService::updateTicket() called. Updating ticket ID# "+ ticket.getId() +"...");
-		return ticketDAO.updateTicket(ticket);
+		return ticketDAO.updateTicket(ticket, managerId);
 	}
 
 	@Override

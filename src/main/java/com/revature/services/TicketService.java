@@ -8,13 +8,13 @@ import com.revature.models.Ticket;
 public interface TicketService {
 
 
-	public boolean registerTicket(Ticket ticket); 
+	public boolean registerTicket(Ticket ticket, int employeeId); 
 	
 	public Ticket getTicketByEmployeeId(int employeeId);
 	
 	public Ticket getTicketById(int id);
 	
-	public boolean updateTicket(Ticket ticket);
+	public boolean updateTicket(Ticket ticket, int managerId);
 
 	public HashMap<Integer, String> getPreviousTicketIds(int employeeId, int status);
 

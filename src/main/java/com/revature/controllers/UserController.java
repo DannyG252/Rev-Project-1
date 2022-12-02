@@ -102,10 +102,11 @@ public class UserController {
 			User currUser = uServ.getUserByUsername(cookieReq);
 			logger.info("Based on cookie, current user is: " + currUser.toString());
 
+			int currUserId = currUser.getId();
 			//if user matches the employee username, then allowed to perform func
 			try {
 				if(currUser.getRole() == 2) { // if employee is logged in
-					boolean isCreated = tServ.registerTicket(target);
+					boolean isCreated = tServ.registerTicket(target, currUserId);
 					
 					if(isCreated == true) {
 						ctx.html("The new ticket has been created successfully.");
@@ -139,6 +140,7 @@ public class UserController {
 		logger.info("Authenication cookie: " + cookieReq);
 		User currUser = uServ.getUserByUsername(cookieReq);
 		logger.info("Based on cookie, current user is: " + currUser.toString());
+		int currUserManagerId = currUser.getId();
 		try {
 			if(currUser.getRole() == 1) { //if manager is logged in
 	
@@ -148,7 +150,7 @@ public class UserController {
 			ctx.html("This ticket has already been processed.");
 			ctx.status(HttpStatus.FORBIDDEN);
 			}else {
-				boolean isUpdated = tServ.updateTicket(target);
+				boolean isUpdated = tServ.updateTicket(target, currUserManagerId);
 				
 				if(isUpdated == true) {
 					ctx.html("Ticket ID# "+ target.getId() +"has been processed successfully.");

@@ -10,13 +10,13 @@ public interface TicketDAO {
 	//TICKET DAO
 	//create (e), read (e) , update (m)
 	
-	int createTicket (Ticket ticket);
+	int createTicket (Ticket ticket, int employeeId);
 	
 	Ticket getTicketByEmployeeId(int employeeId);
 	
 	Ticket getTicketById(int id);
 	
-	boolean updateTicket (Ticket ticket);
+	boolean updateTicket (Ticket ticket, int managerId);
 
 	HashMap<Integer, String > getPreviousTicketIds(int employeeId, int status);
 	

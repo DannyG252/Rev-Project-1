@@ -19,16 +19,16 @@ public class TicketDAOImpl implements TicketDAO{
 	private static Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 	
 	@Override
-	public int createTicket(Ticket ticket) {
+	public int createTicket(Ticket ticket, int employeeId) {
 	
 		try {
 			Connection conn = JDBCConnectionUtil.getConnection();
 			
-			String sql = "INSERT INTO tickets (employee_id, amount, description, status, manager_id, processed) VALUES( ?, ?, ?, 1, null, false)";
+			String sql = "INSERT INTO tickets (employee_id, amount, description, status, manager_id, processed) VALUES( ?, ?, ?, 1, 0, false)";
 		
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			//pstmt.setInt(1, ticket.getId());
-			pstmt.setInt(1, ticket.getEmployeeId());
+			pstmt.setInt(1, employeeId);
 			pstmt.setDouble(2, ticket.getAmount());
 			pstmt.setString(3, ticket.getDescription());
 			//pstmt.setInt(5, ticket.getStatus());
@@ -89,7 +89,7 @@ public class TicketDAOImpl implements TicketDAO{
 
 
 	@Override
-	public boolean updateTicket(Ticket ticket) {
+	public boolean updateTicket(Ticket ticket, int managerId) {
 			try {
 				Connection conn = JDBCConnectionUtil.getConnection();
 				
@@ -97,7 +97,7 @@ public class TicketDAOImpl implements TicketDAO{
 				String sql = "UPDATE tickets SET status =?, manager_id = ?, processed = true WHERE id=?";
 				PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 				pstmt.setInt(1,ticket.getStatus());
-				pstmt.setInt(2,ticket.getManagerId());
+				pstmt.setInt(2, managerId);
 				pstmt.setInt(3,ticket.getId());
 				
 				if(pstmt.executeUpdate() > 0) {
@@ -115,7 +115,7 @@ public class TicketDAOImpl implements TicketDAO{
 		try {
 			Connection conn = JDBCConnectionUtil.getConnection();
 			
-			String sql = "SELECT id, employee_id, amount, description, status, processed FROM tickets WHERE id = ?";
+			String sql = "SELECT * FROM tickets WHERE id = ?";
 			
 			Ticket currentTicket = new Ticket();
 			
@@ -130,6 +130,7 @@ public class TicketDAOImpl implements TicketDAO{
 				currentTicket.setAmount(rs.getDouble("amount"));
 				currentTicket.setDescription(rs.getString("description"));
 				currentTicket.setStatus(rs.getInt("status"));
+				currentTicket.setManagerId(rs.getInt("manager_id"));
 				currentTicket.setProcessed(rs.getBoolean("processed"));
 			}
 			

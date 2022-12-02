@@ -21,4 +21,8 @@ public interface TicketService {
 	public boolean checkTicketProcessed(int ticketId);
 	
 	public boolean doesTicketExist(int ticketId);
+	
+	public ArrayList<String> managerViewTickets();
+	
+	public ArrayList<String> managerViewTickets(int status);
 }

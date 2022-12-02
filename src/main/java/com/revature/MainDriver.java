@@ -39,9 +39,9 @@ public class MainDriver {
 		app.post("/users/login", UserController.login);
 		app.post("/users/tickets-register", UserController.registerTicket);
 		app.post("/users/tickets-get-by-ticket-id", UserController.getTicketById);
-		
 		app.post("/users/tickets-view-previous", UserController.getPreviousTicketIds);
 		
+		app.post("/users/manager-view-tickets", UserController.managerViewTickets);
 		
 		//PUT METHODS
 		

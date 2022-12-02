@@ -243,4 +243,51 @@ public class UserController {
 		}
 		
 	};
+	public static Handler managerViewTickets = ctx -> {
+		logger.info("Manager is attempting to view tickets");
+		String body = ctx.body();
+		
+		//here we will convert the body into a Ticket object
+		ObjectMapper om = new ObjectMapper();
+		Ticket target = om.readValue(body, Ticket.class);
+		
+		//needs to e cookie controlled, managers only can perform this fucntion 
+		//**Check cookie if manager**
+		String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+		cookieReq = cookieReq.replaceAll("unique-key123","");
+		logger.info("Authenication cookie: " + cookieReq);
+		User currUser = uServ.getUserByUsername(cookieReq);
+		logger.info("Based on cookie, current user is: " + currUser.toString());
+		try {
+			if(currUser.getRole() == 1) { //if manager is logged in
+				ArrayList<String> ticketList = new ArrayList<String>();
+				if (target.getStatus() == 1) {
+					ticketList = tServ.managerViewTickets(target.getStatus());
+				}else {
+					ticketList = tServ.managerViewTickets();
+				}
+				
+				String listString = "";
+				
+				if (ticketList.size() > 0) {
+					
+					for (int i = 0 ; i < ticketList.size() ; i ++) {
+						listString += ticketList.get(i) + "\n";
+					}
+					
+					ctx.html(listString);
+					ctx.status(HttpStatus.OK);
+				}else {
+					ctx.html("Tickets not found");
+					ctx.status(HttpStatus.BAD_REQUEST);
+				}
+		}else {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
+		}
+		}catch (NullPointerException e) {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
+		}
+	};
 }

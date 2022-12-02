@@ -67,4 +67,18 @@ public class TicketServiceImpl implements TicketService{
 		return ticketDAO.doesTicketExist(ticketId);
 	}
 
+	@Override
+	public ArrayList<String> managerViewTickets() {
+		logger.info("TicketService::managerViewTickets() called. Trying to find tickets...");
+		return ticketDAO.managerViewTickets();
+	}
+
+	@Override
+	public ArrayList<String> managerViewTickets(int status) {
+		logger.info("TicketService::managerViewTickets(itn status) called. Trying to find pending tickets...");
+		return ticketDAO.managerViewTickets(status);
+	}
+	
+	
+
 }

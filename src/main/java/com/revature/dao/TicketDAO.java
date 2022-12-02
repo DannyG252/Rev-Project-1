@@ -21,4 +21,8 @@ public interface TicketDAO {
 	HashMap<Integer, String > getPreviousTicketIds(int employeeId, int status);
 	
 	boolean doesTicketExist(int ticketId);
+
+	ArrayList<String> managerViewTickets();
+	
+	ArrayList<String> managerViewTickets(int status);
 }

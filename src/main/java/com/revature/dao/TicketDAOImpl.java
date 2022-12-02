@@ -171,7 +171,7 @@ public class TicketDAOImpl implements TicketDAO{
 				case 1: twoString = "pending"; break;
 				case 2: twoString = "approved"; break;
 				case 3: twoString = "denied"; break;
-				default: twoString = "n/a"; break;
+				default: twoString = ""; break;
 				}
 				ticketList.put(one, twoString);
 				}
@@ -215,6 +215,88 @@ public class TicketDAOImpl implements TicketDAO{
 		//if nothing found
 		logger.info("Ticket not found");
 		return false;
+	}
+
+
+	@Override
+	public ArrayList<String> managerViewTickets() {
+		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
+			String sql = "SELECT id, employee_id, amount, description, status, processed FROM tickets";
+			
+			Ticket currentTicket = new Ticket();
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		
+			ResultSet rs = pstmt.executeQuery();
+			
+			ArrayList<String> ticketList = new ArrayList<String>();
+			String currentTicketString = "";
+			
+			while(rs.next()) {
+				currentTicket.setId(rs.getInt("id"));
+				currentTicket.setEmployeeId(rs.getInt("employee_id"));
+				currentTicket.setAmount(rs.getDouble("amount"));
+				currentTicket.setDescription(rs.getString("description"));
+				currentTicket.setStatus(rs.getInt("status"));
+				currentTicket.setProcessed(rs.getBoolean("processed"));
+				currentTicketString = currentTicket.toString();
+				ticketList.add(currentTicketString);
+			}
+			
+			//
+			logger.info("TicketDAOImpl - managerViewTickets - found" + ticketList.size() +"tickets ");
+			conn.close();
+			return ticketList;
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		//if nothing found
+		logger.info("Tickets not found");
+		return null;
+	}
+
+
+	@Override
+	public ArrayList<String> managerViewTickets(int status) {
+		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+			
+			String sql = "SELECT id, employee_id, amount, description, status, processed FROM tickets WHERE status = 1";
+			
+			Ticket currentTicket = new Ticket();
+			
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+		
+			ResultSet rs = pstmt.executeQuery();
+			
+			ArrayList<String> ticketList = new ArrayList<String>();
+			String currentTicketString = "";
+			
+			while(rs.next()) {
+				currentTicket.setId(rs.getInt("id"));
+				currentTicket.setEmployeeId(rs.getInt("employee_id"));
+				currentTicket.setAmount(rs.getDouble("amount"));
+				currentTicket.setDescription(rs.getString("description"));
+				currentTicket.setStatus(rs.getInt("status"));
+				currentTicket.setProcessed(rs.getBoolean("processed"));
+				currentTicketString = currentTicket.toString();
+				ticketList.add(currentTicketString);
+			}
+			
+			//
+			logger.info("TicketDAOImpl - managerViewTickets(status) - found" + ticketList.size() +"tickets ");
+			conn.close();
+			return ticketList;
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		//if nothing found
+		logger.info("Tickets not found");
+		return null;
 	}
 	
 }

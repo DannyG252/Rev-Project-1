@@ -1,0 +1,82 @@
+DBeaver
+******
+-users
+	-id (serial, primary)
+	-username (varchar)
+	-password (varchar)
+	-role (int) [1 = manager, 2 = employee]
+	
+-tickets 
+	-id (serial, primary)
+	-employee_id (int)
+	-amount (int)
+	-description (varchar)
+	-status (int) [1 = pending, 2 = approved, 3 = denied]
+	-manager_id (int)
+	-processed (boolean)
+	
+Postman
+*******
+-Create User 
+	{
+    "username": "employee1",
+    "password": "pass3",
+    "role": 2
+	}
+	
+-Login [creates cookie based on username]
+	{
+	   "username": "employee",
+	    "password": "pass2"
+	}
+	
+-Submit Ticket [employee only]
+	{
+	    "employeeId" : 1,
+	    "amount": 10.50,
+	    "description": "description"
+	}
+	
+-Process Ticket [manager]
+	{
+	    "id": 5,
+	    "employeeId": 1,
+	    "status": 2,
+	    "managerId": 1
+	}
+	
+-Get Ticket by ID
+	{
+	    "id" : 1
+	}
+	
+-Get Employee's Prev Ticket Ids
+	{
+	    "employeeId": 1,
+	    "status" : 1
+	}
+	
+	
+STEPS
+****
+(point out error codes for bad retirevals, ect)
+
+-create user -> show in database
+-login - employee
+	-show invalid login
+	-show cookie
+-submit ticket
+-get employee's prev ticket ids for current employee
+	-show bad retrieval 
+-(choose 1) get ticket by id
+	-show invalid ticket [ex.id:22]
+-Process ticket - show no authorization
+
+
+-login as manager
+	-show cookie changed
+-process ticket
+	-show already processed one [ticket id: 1]
+-get that ticket by id (show that is processed)
+
+//maybe show logging at end

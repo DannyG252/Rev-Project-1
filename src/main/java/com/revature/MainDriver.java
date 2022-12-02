@@ -31,6 +31,7 @@ public class MainDriver {
 			ctx.html("Welcome to the application!");
 		});
 		
+		app.get("/users/logout", UserController.logout);
 
 		
 		//POST METHODS
@@ -40,6 +41,7 @@ public class MainDriver {
 		app.post("/users/tickets-get-by-ticket-id", UserController.getTicketById);
 		
 		app.post("/users/tickets-view-previous", UserController.getPreviousTicketIds);
+		
 		
 		//PUT METHODS
 		

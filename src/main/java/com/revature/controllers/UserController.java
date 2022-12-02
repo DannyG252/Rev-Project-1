@@ -69,7 +69,7 @@ public class UserController {
 		
 		//3. render response
 		if(isAuthenicated == true) {
-			ctx.html("Successful" + "login. Welcome " + target.getUsername() + "!");
+			ctx.html("Successful login. Welcome " + target.getUsername() + "!");
 			
 			//authorize user - cookie
 			ctx.cookieStore().set("Auth-Cookie", target.getUsername() + "unique-key123");
@@ -216,5 +216,31 @@ public class UserController {
 				ctx.html("Error during retrieval. Try again.");
 				ctx.status(HttpStatus.BAD_REQUEST);
 			}
+	};
+	public static Handler logout = ctx -> {
+		
+		logger.info("logging out user...");
+		/*
+		String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+		cookieReq = cookieReq.replaceAll("unique-key123","");
+		logger.info("Authenication cookie: " + cookieReq);*/
+		
+		ctx.cookieStore().clear();
+		
+		try {
+			String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+			logger.info("Authenication cookie: " + cookieReq);
+			if (cookieReq == null) {
+				ctx.html("Successfully logged out");
+				ctx.status(HttpStatus.OK);
+			}else {
+				ctx.html("Logger not logged out");
+				ctx.status(HttpStatus.BAD_REQUEST);
+			}
+		} catch(Exception e) {
+			ctx.html("Successfully logged out");
+			ctx.status(HttpStatus.OK);
+		}
+		
 	};
 }

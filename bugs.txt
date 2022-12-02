@@ -1,5 +1,6 @@
 
 --for UserDAOImpl.createTicket() -- change so that employeeId is automatically the same as whatever user is submitting
+	-> make pull user info from cookies for some methods
 
 --get ticket by id --change to return all info from ticket
 
@@ -14,3 +15,11 @@
 
 --write description of all funcs / whats interacting
 --reset db / set up for present
+
+-logout??
+-manager can view all tickets & view pending tickets
+-change employee view prev to be autheticated by a cookie & automatically know the employees id?
+
+-process ticket automatically takes the manager_id and uses that for the ticket
+
+-?only managers can create new users?

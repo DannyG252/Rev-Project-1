@@ -199,22 +199,41 @@ public class UserController {
 			ObjectMapper om = new ObjectMapper();
 			Ticket target = om.readValue(body, Ticket.class);
 
-			HashMap<Integer, String> ticketIdList = tServ.getPreviousTicketIds(target.getEmployeeId(), target.getStatus());
+			//**Check cookie if employee**
+			String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+			cookieReq = cookieReq.replaceAll("unique-key123","");
+			logger.info("Authenication cookie: " + cookieReq);
+			User currUser = uServ.getUserByUsername(cookieReq);
+			logger.info("Based on cookie, current user is: " + currUser.toString());
+			int currId = currUser.getId();
 			
-			if( ticketIdList.size() > 0 ) {	
-			Iterator<Map.Entry<Integer, String>> iterator = ticketIdList.entrySet().iterator();
-			String printString = "Found tickets: \n";
-			
-			while(iterator.hasNext()) {
-				Map.Entry<Integer, String> currTicket = iterator.next();
-				printString += "Ticket Id = " + currTicket.getKey() + " , Status = " + currTicket.getValue() + "\n";
-			}
-				
-				ctx.html(printString);
-				ctx.status(HttpStatus.OK);
+			try {
+				if(currUser.getRole() == 2) { //if employee is logged in
+					
+					HashMap<Integer, String> ticketIdList = tServ.getPreviousTicketIds(currId, target.getStatus());
+					
+					if( ticketIdList.size() > 0 ) {	
+					Iterator<Map.Entry<Integer, String>> iterator = ticketIdList.entrySet().iterator();
+					String printString = "Found tickets: \n";
+					
+					while(iterator.hasNext()) {
+						Map.Entry<Integer, String> currTicket = iterator.next();
+						printString += "Ticket Id = " + currTicket.getKey() + " , Status = " + currTicket.getValue() + "\n";
+					}
+						
+						ctx.html(printString);
+						ctx.status(HttpStatus.OK);
+					}else {
+						ctx.html("Error during retrieval. Try again.");
+						ctx.status(HttpStatus.BAD_REQUEST);
+					}
 			}else {
-				ctx.html("Error during retrieval. Try again.");
-				ctx.status(HttpStatus.BAD_REQUEST);
+				ctx.html("Sorry, this user is not authorized to perform this action");
+				ctx.status(HttpStatus.UNAUTHORIZED);
+			}
+			}catch (NullPointerException e) {
+				ctx.html("Sorry, this user is not authorized to perform this action");
+				ctx.status(HttpStatus.UNAUTHORIZED);
 			}
 	};
 	public static Handler logout = ctx -> {

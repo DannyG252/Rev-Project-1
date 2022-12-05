@@ -311,4 +311,49 @@ public class UserController {
 			ctx.status(HttpStatus.UNAUTHORIZED);
 		}
 	};
+	
+	public static Handler updateUserRole = ctx -> {
+		logger.info("User is making an Update User request...");
+		String body = ctx.body();
+		
+		//here we will convert the body into a Ticket object
+		ObjectMapper om = new ObjectMapper();
+		User target = om.readValue(body, User.class);
+		
+		//**Check cookie if manager**
+		String cookieReq = ctx.cookieStore().get("Auth-Cookie");
+		cookieReq = cookieReq.replaceAll("unique-key123","");
+		logger.info("Authenication cookie: " + cookieReq);
+		User currUser = uServ.getUserByUsername(cookieReq);
+		logger.info("Based on cookie, current user is: " + currUser.toString());
+		
+		int newUserRole = target.getRole();
+		String newUserRoleString = "";
+		switch(newUserRole) {
+			case 1: newUserRoleString = "manager"; break;
+			case 2: newUserRoleString = "employee"; break;
+		}
+		
+		try {
+			if(currUser.getRole() == 1) { //if manager is logged in
+	
+			boolean isUpdated = uServ.updateUserRole(target); //********************
+			
+			if(isUpdated == true) {
+				
+				ctx.html("Employee ID# "+ target.getId() +"has been updated successfully. \nNew Role is: " + newUserRoleString);
+				ctx.status(HttpStatus.OK);
+			}else {
+				ctx.html("Error during processing. Try again.");
+				ctx.status(HttpStatus.BAD_REQUEST);
+			}
+		}else {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
+		}
+		}catch (NullPointerException e) {
+			ctx.html("Sorry, this user is not authorized to perform this action");
+			ctx.status(HttpStatus.UNAUTHORIZED);
+		}
+	};
 }

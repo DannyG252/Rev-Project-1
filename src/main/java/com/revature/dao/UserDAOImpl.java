@@ -27,13 +27,12 @@ public class UserDAOImpl implements UserDAO{
 			//1. prepare our SQL statement
 			//we are using ? as a placeholder for the values we will set in our preparedstatement
 			//this is used to prevent SQL injection (aka your users having the ability to mess up your code with their own data)
-			String sql = "INSERT INTO users (username, password, role) VALUES(?, ?, ?)";
+			String sql = "INSERT INTO users (username, password, role) VALUES(?, ?, 2)";
 			
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			//now we are filling in the ?
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
-			pstmt.setInt(3, Integer.valueOf(user.getRole()));
 			
 			//note that when we are inserting, we will get back our new ID number from the ResultSet
 			pstmt.executeUpdate();
@@ -85,6 +84,27 @@ public class UserDAOImpl implements UserDAO{
 		//if nothing found
 		logger.info("User not found");
 		return null;
+	}
+
+	public boolean updateUserRole(User user) {
+		try {
+			Connection conn = JDBCConnectionUtil.getConnection();
+
+			String sql = "UPDATE users SET role =? WHERE id=?";
+			PreparedStatement pstmt = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, user.getRole());
+			pstmt.setInt(2, user.getId());
+			
+			if(pstmt.executeUpdate() > 0) {
+				conn.close();
+				return true;
+			};
+		} catch (SQLException sqlEx){
+			logger.error("UserDAOImpl - updateUserRole() " + sqlEx.getMessage());
+		}
+		
+		return false;
 	}
 
 }

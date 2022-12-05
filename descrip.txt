@@ -80,3 +80,10 @@ STEPS
 -get that ticket by id (show that is processed)
 
 //maybe show logging at end
+
+---
+-manager can view all tickets and pending -> show all pending ; manager only
+-employee view prev -> employee only, gets employee id from cookie
+
+-process ticket automatically takes manager id & uses that for ticket
+-submit ticket -> auto grab employee id 

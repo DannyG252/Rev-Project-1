@@ -46,6 +46,7 @@ public class MainDriver {
 		//PUT METHODS
 		
 		app.put("/users/tickets-process", UserController.processTicket);
+		app.put("/users/update-user-role", UserController.updateUserRole);
 		
 		
 		

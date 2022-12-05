@@ -50,6 +50,10 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
+	public boolean updateUserRole(User user) {
+		logger.info("UserService::updateUserRole() called. Updating employee ID# "+ user.getId() +"...");
+		return userDAO.updateUserRole(user);
+	}
 
 	
 }

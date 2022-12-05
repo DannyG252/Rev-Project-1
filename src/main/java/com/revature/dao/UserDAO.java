@@ -8,5 +8,6 @@ public interface UserDAO {
 	
 	User getByUsername(String username); 
 
+	boolean updateUserRole(User user);
 }
 

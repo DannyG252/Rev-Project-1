@@ -101,6 +101,7 @@ public class TicketDAOImpl implements TicketDAO{
 				pstmt.setInt(3,ticket.getId());
 				
 				if(pstmt.executeUpdate() > 0) {
+					conn.close();
 					return true;
 				};
 			} catch (SQLException sqlEx){

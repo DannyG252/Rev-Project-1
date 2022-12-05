@@ -13,5 +13,5 @@ public interface UserService {
 	
 	public boolean login(String username, String password);
 	
-	
-}
+	public boolean updateUserRole(User user);
+	}
